@@ -1,68 +1,67 @@
-arch snes.cpu
-lorom
+include "../include/snes.asm"
 
 // Addresses to helper functions for stat tracking
-define inc_stat $dfd800         // Inc stat, stat id in A
-define dec_stat $dfd840         // Dec stat, stat id in A
-define store_stat $dfd880       // Store stat, value in A, stat id in X
-define load_stat $dfd8b0        // Load stat, stat id in A, value returned in A
+define inc_stat = $dfd800         // Inc stat, stat id in A
+define dec_stat = $dfd840         // Dec stat, stat id in A
+define store_stat = $dfd880       // Store stat, value in A, stat id in X
+define load_stat = $dfd8b0        // Load stat, stat id in A, value returned in A
 
 // RTA Timer (timer 1 is frames, and timer 2 is number of times frames rolled over)
-define timer1 $05b8
-define timer2 $05ba
+define timer1 = $05b8
+define timer2 = $05ba
 
 // Temp variables (define here to make sure they're not reused, make sure they're 2 bytes apart)
 // These variables are cleared to 0x00 on hard and soft reset
-define door_timer_tmp $7fff00
-define door_adjust_tmp $7fff02
-define add_time_tmp $7fff04
-define region_timer_tmp $7fff06
-define region_tmp $7fff08
+define door_timer_tmp = $7fff00
+define door_adjust_tmp = $7fff02
+define add_time_tmp = $7fff04
+define region_timer_tmp = $7fff06
+define region_tmp = $7fff08
 
 // -------------------------------
 // HIJACKS
 // -------------------------------
 
 // Samus hit a door block (Gamestate change to $09 just before hitting $0a)
-org $82e176
+seek($82e176)
     jml door_entered
 
 // Samus gains control back after door (Gamestate change back to $08 after door transition)
-org $82e764
+seek($82e764)
     jml door_exited
 
 // Door starts adjusting
-org $82e309
+seek($82e309)
     jml door_adjust_start
 
 // Door stops adjusting
-org $82e34c
+seek($82e34c)
     jml door_adjust_stop
 
 // Firing charged beam
-org $90b9a1
+seek($90b9a1)
     jml charged_beam
 
 // Firing SBAs
-org $90ccde
+seek($90ccde)
     jmp fire_sba_local	
 
 //Missiles/supers fired
-org $90beb7
+seek($90beb7)
     jml missiles_fired
 
 //Bombs/PBs laid
-org $90c107
+seek($90c107)
     jml bombs_laid
 
-org $90f800
+seek($90f800)
 fire_sba_local:
     jml fire_sba
 
 // -------------------------------
 // CODE (using bank A1 free space)
 // -------------------------------
-org $a1ec00
+seek($a1ec00)
 // Helper function to add a time delta, X = stat to add to, A = value to check against
 // This uses 4-bytes for each time delta
 add_time:
@@ -155,21 +154,20 @@ charged_beam:
     jsl {inc_stat}
 
     // Run hijacked code and return
-    LDX #$0000
-    LDA $0c2c, x
-    JML $90b9a7
+    ldx #$0000
+    lda $0c2c,x
+    jml $90b9a7
 
 // Firing SBAs : hijack the point where new qty of PBs is stored
 fire_sba:
     // check if SBA routine actually changed PB count: means valid beam combo selected
     cmp $09ce
-    beq .end
+    beq +
     pha
     lda #$0015
     jsl {inc_stat}
     pla
-    // Run hijacked code and return
-.end:
++   // Run hijacked code and return
     sta $09ce
     jml $90cce1
 
@@ -177,28 +175,28 @@ fire_sba:
 missiles_fired:
     lda $09d2
     cmp #$0002
-    beq .super
+    beq super_fired
     dec $09c6
     lda #$0016
     jsl {inc_stat}
-    bra .end
-.super:
+    bra missile_end
+super_fired:
     dec $09ca
     lda #$0017
     jsl {inc_stat}
-.end:
+missile_end:
     jml $90bec7
 
 //bombs/PBs laid
 bombs_laid:
     lda $09d2			// HUD sleection index
     cmp #$0003
-    beq .power_bomb
+    beq power_bomb_laid
     lda #$001a
-    bra .end
-.power_bomb:
+    bra bombs_end
+power_bomb_laid:
     lda #$0018
-.end:
+bombs_end:
     jsl {inc_stat}
     //run hijacked code and return
     lda $0cd2

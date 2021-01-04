@@ -20,3 +20,9 @@ macro insert_nop(define num) {
       evaluate i = {i} - 1
    }
 }
+
+macro warnpc(variable addr) {
+   if (pc() >= addr) {
+      print "warnpc! exceeded: ",hex:addr,"\n"
+   }
+}

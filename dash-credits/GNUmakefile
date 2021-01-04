@@ -31,3 +31,5 @@ all:
 	@cp ../tools/DASH_v10_SM_68081.sfc credits.sfc
 	$(build) -m credits.sfc tracking.asm
 	@diff ../tools/DASH_v10_SM_68081.sfc credits.sfc
+	$(build) -m credits.sfc credits.asm
+	@diff ../tools/DASH_v10_SM_68081.sfc credits.sfc

@@ -1,72 +1,64 @@
-// custom credits
-arch snes.cpu
-lorom
+include "../include/snes.asm"
+include "fonts.asm"
 
 // Defines for the script and credits data
-define speed $f770
-define set $9a17
-define delay $9a0d
-define draw $0000
-define end $f6fe, $99fe
-define blank $1fc0
-define row $0040
-define pink "table tables/pink.tbl"
-define yellow "table tables/yellow.tbl"
-define cyan "table tables/cyan.tbl"
-define blue "table tables/blue.tbl"
-define green "table tables/green.tbl"
-define orange "table tables/orange.tbl"
-define purple "table tables/purple.tbl"
-define big "table tables/big.tbl"
-define last_saveslot $7fffe0
-define timer_backup1 $7fffe2
-define timer_backup2 $7fffe4
-define softreset $7fffe6
-define scroll_speed $7fffe8
-define timer1 $05b8
-define timer2 $05ba
+define speed = $f770
+define set = $9a17
+define delay = $9a0d
+define draw = $0000
+define end = $f6fe, $99fe
+define blank = $1fc0
+define row = $0040
+
+define last_saveslot = $7fffe0
+define timer_backup1 = $7fffe2
+define timer_backup2 = $7fffe4
+define softreset = $7fffe6
+define scroll_speed = $7fffe8
+define timer1 = $05b8
+define timer2 = $05ba
 
 // Patch soft reset to retain value of RTA counter
-org $80844B
+seek($80844B)
     jml patch_reset1
-org $808490
+seek($808490)
     jml patch_reset2
 
 // Patch loading and saving routines
-org $81807f
+seek($81807f)
     jmp patch_save
 
-org $8180f7
+seek($8180f7)
     jmp patch_load
 
 // Hijack loading new game to reset stats
-org $828063
+seek($828063)
     jsl clear_values
 
 // Hijack the original credits code to read the script from bank $DF
-org $8b9976
+seek($8b9976)
     jml scroll
 
-org $8b999b
+seek($8b999b)
     jml patch1 
 
-org $8b99e5
+seek($8b99e5)
     jml patch2
 
-org $8b9a08
+seek($8b9a08)
     jml patch3
 
-org $8b9a19
+seek($8b9a19)
     jml patch4
 
 
 
 // Hijack when samus is in the ship and ready to leave the planet
-org $a2ab13
+seek($a2ab13)
     jsl game_end
 
 // Patch NMI to skip resetting 05ba and instead use that as an extra time counter
-org $8095e5
+seek($8095e5)
 nmi:
     ldx #$00
     stx $05b4
@@ -74,17 +66,17 @@ nmi:
     inx
     stx $05b5
     inc $05b6
-.inc:
+nmi_inc:
     rep #$30
     inc $05b8
     bne +
     inc $05ba
 +
-    bra .end
+    bra nmi_end
 
-org $809602
-    bra .inc
-.end:
+seek($809602)
+    bra nmi_inc
+nmi_end:
     ply
     plx
     pla
@@ -93,28 +85,28 @@ org $809602
     rti
 
 // Patch soft reset to save the value of the RTA timer
-org $80fe00
+seek($80fe00)
 patch_reset1:
     lda {softreset} // Check if we're softresetting
     cmp #$babe
-    beq .save
+    beq save_timer
     lda #$babe
     sta {softreset}
     lda #$0000
     sta {timer_backup1}
     sta {timer_backup2}
     sta {last_saveslot}
-    bra .skipsave
-.save:   
+    bra skipsave
+save_timer:   
     lda {timer1}
     sta {timer_backup1}
     lda {timer2}
     sta {timer_backup2}
-.skipsave:
+skipsave:
     ldx #$1ffe
     lda #$0000
 -
-    stz $0000, x
+    stz $0000,x
     dex
     dex
     bpl - 
@@ -146,7 +138,7 @@ patch_reset2:
     ldx #$00df          // clear temp variables
     lda #$0000
 -
-    sta $7fff00, x
+    sta $7fff00,x
     dex
     dex
     bpl -
@@ -157,10 +149,10 @@ patch_reset2:
     sta {timer2}
     jml $8084af
 
-warnpc $80ff00
+warnpc($80ff00)
 
 // Patch load and save routines
-org $81ef20
+seek($81ef20)
 patch_save:
     lda {timer1}
     sta $7ffc00
@@ -197,15 +189,15 @@ patch_load:
     rtl
 
 // Hijack after decompression of regular credits tilemaps
-org $8be0d1
+seek($8be0d1)
     jsl copy
 
 // Load credits script data from bank $df instead of $8c
-org $8bf770
+seek($8bf770)
 set_scroll:
     rep #$30
     phb; pea $df00; plb; plb
-    lda $0000, y
+    lda $0000,y
     sta {scroll_speed}
     iny
     iny
@@ -228,7 +220,7 @@ scroll:
 
 patch1:
     phb; pea $df00; plb; plb
-    lda $0000, y    
+    lda $0000,y    
     bpl +
     plb
     jml $8b99a0
@@ -239,20 +231,20 @@ patch1:
 patch2:
     sta $0014
     phb; pea $df00; plb; plb
-    lda $0002, y    
+    lda $0002,y    
     plb
     jml $8b99eb
 
 patch3:
     phb; pea $df00; plb; plb
-    lda $0000, y
+    lda $0000,y
     tay
     plb
     jml $8b9a0c
 
 patch4:
     phb; pea $df00; plb; plb
-    lda $0000, y
+    lda $0000,y
     plb
     sta $19fb
     jml $8b9a1f
@@ -263,10 +255,10 @@ copy:
     phx
     ldx #$0000
 -
-    lda.l credits, x
+    lda.l credits,x
     cmp #$0000
     beq +
-    sta $7f2000, x
+    sta $7f2000,x
     inx
     inx
     jmp -
@@ -274,10 +266,10 @@ copy:
 
     ldx #$0000
 -
-    lda.l itemlocations, x
+    lda.l itemlocations,x
     cmp #$0000
     beq +
-    sta $7fa000, x
+    sta $7fa000,x
     inx
     inx
     jmp -
@@ -298,11 +290,11 @@ clear_values:
     // Make sure game mode is 1f
     lda $7e0998
     cmp.w #$001f
-    bne .ret
+    bne clear_value_ret
     
     // Check if samus saved energy is 00, if it is, run startup code
     lda $7ed7e2
-    bne .ret
+    bne clear_value_ret
 
     ldx #$0000
     lda #$0000
@@ -317,7 +309,7 @@ clear_values:
     sta {timer1}
     sta {timer2}
 
-.ret:
+clear_value_ret:
     plp
     jsl $809a79
     rtl
@@ -342,7 +334,7 @@ game_end:
     jsl $90f084
     rtl
 
-org $dfd4f0
+seek($dfd4f0)
 // Draw full time as hh:mm:ss:ff
 // Pointer to first byte of RAM in A
 draw_full_time:
@@ -350,9 +342,9 @@ draw_full_time:
     phb
     pea $7f7f; plb; plb
     tax
-    lda $0000, x
+    lda $0000,x
     sta $16
-    lda $0002, x
+    lda $0002,x
     sta $14
     lda #$003c
     sta $12
@@ -441,10 +433,10 @@ draw_three:
     tax
     cmp $1a
     beq +
-    lda numbers_top, x
-    sta $0034, y
-    lda numbers_bot, x
-    sta $0074, y
+    lda numbers_top,x
+    sta $0034,y
+    lda numbers_bot,x
+    sta $0074,y
     dec $1a
 +
     iny; iny // Next number
@@ -461,10 +453,10 @@ draw_two:
     tax
     cmp $1a
     beq +
-    lda numbers_top, x
-    sta $0034, y
-    lda numbers_bot, x
-    sta $0074, y
+    lda numbers_top,x
+    sta $0034,y
+    lda numbers_bot,x
+    sta $0074,y
     dec $1a
 +
     lda $004216
@@ -472,10 +464,10 @@ draw_two:
     tax
     cmp $1a
     beq +
-    lda numbers_top, x
-    sta $0036, y
-    lda numbers_bot, x
-    sta $0076, y
+    lda numbers_top,x
+    sta $0036,y
+    lda numbers_bot,x
+    sta $0076,y
     dec $1a
 +
     iny; iny; iny; iny
@@ -492,74 +484,74 @@ write_stats:
     ldx #$0000
     ldy #$0000
 
-.loop:
+write_loop:
     // Get pointer to table
     tya
     asl; asl; asl;
     tax
 
     // Load stat type
-    lda stats+4, x
-    beq .end
+    lda stats+4,x
+    beq write_end
     cmp #$0001
-    beq .number
+    beq write_number
     cmp #$0002
-    beq .time
+    beq write_time
     cmp #$0003
-    beq .fulltime
-    jmp .continue
+    beq write_fulltime
+    jmp write_continue
 
-.number:
+write_number:
     // Load statistic
-    lda stats, x
+    lda stats,x
     jsl load_stat
     pha
 
     // Load row address
-    lda stats+2, x
+    lda stats+2,x
     tyx
     tay
     pla
     jsr draw_value
     txy
-    jmp .continue
+    jmp write_continue
 
-.time:
+write_time:
     // Load statistic
-    lda stats, x
+    lda stats,x
     jsl load_stat
     pha
 
     // Load row address
-    lda stats+2, x
+    lda stats+2,x
     tyx
     tay
     pla
     jsr draw_time
     txy
-    jmp .continue
+    jmp write_continue
 
-.fulltime:    
-    lda stats, x        // Get stat id
+write_fulltime:    
+    lda stats,x        // Get stat id
     asl
     clc
     adc #$fc00          // Get pointer to value instead of actual value
     pha
 
     // Load row address
-    lda stats+2, x
+    lda stats+2,x
     tyx
     tay
     pla
     jsr draw_full_time
     txy
-    jmp .continue
+    jmp write_continue
 
-.continue:
+write_continue:
     iny
-    jmp .loop
+    jmp write_loop
 
-.end:
+write_end:
     plp
     plb
     ply
@@ -618,33 +610,33 @@ load_stats:
     lda $7e0952
     bne +
 -
-    lda $701400, x
-    sta $7ffc00, x
+    lda $701400,x
+    sta $7ffc00,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp load_end
 +   
     cmp #$0001
     bne +
-    lda $701700, x
-    sta $7ffc00, x
+    lda $701700,x
+    sta $7ffc00,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp load_end
 +   
-    lda $701a00, x
-    sta $7ffc00, x
+    lda $701a00,x
+    sta $7ffc00,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp load_end
 
-.end:
+load_end:
     pla
     plx
     rtl
@@ -656,65 +648,65 @@ save_stats:
     lda $7e0952
     bne +
 -
-    lda $7ffc00, x
-    sta $701400, x
+    lda $7ffc00,x
+    sta $701400,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp save_end
 +   
     cmp #$0001
     bne +
-    lda $7ffc00, x
-    sta $701700, x
+    lda $7ffc00,x
+    sta $701700,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp save_end
 +   
-    lda $7ffc00, x
-    sta $701a00, x
+    lda $7ffc00,x
+    sta $701a00,x
     inx
     inx
     cpx #$0300
     bne -
-    jmp .end
+    jmp save_end
 
-.end:
+save_end:
     pla
     plx
     rtl
 
-warnpc $dfd800
+warnpc($dfd800)
 // Increment Statistic (in A)
-org $dfd800
+seek($dfd800)
 inc_stat:
     phx
     asl
     tax
-    lda $7ffc00, x
+    lda $7ffc00,x
     inc
-    sta $7ffc00, x
+    sta $7ffc00,x
     plx
     rtl
 
 // Decrement Statistic (in A)
-org $dfd840
+seek($dfd840)
 dec_stat:
     phx
     asl
     tax
-    lda $7ffc00, x
+    lda $7ffc00,x
     dec
-    sta $7ffc00, x
+    sta $7ffc00,x
     plx
     rtl
 
 
 // Store Statistic (value in A, stat in X)
-org $dfd880
+seek($dfd880)
 store_stat:
     phx
     pha
@@ -722,23 +714,23 @@ store_stat:
     asl
     tax
     pla
-    sta $7ffc00, x
+    sta $7ffc00,x
     plx
     rtl
 
 // Load Statistic (stat in A, returns value in A)
-org $dfd8b0
+seek($dfd8b0)
 load_stat:
     phx
     asl
     tax
-    lda $7ffc00, x
+    lda $7ffc00,x
     plx
     rtl
 
 
 // New credits script in free space of bank $DF
-org $dfd91b
+seek($dfd91b)
 script:
     dw {set}, $0002; -
     dw {draw}, {blank}
@@ -1198,69 +1190,69 @@ stats:
     dw 26,      {row}*215,  1, 0    // Bombs
     dw 0,               0,  0, 0    // end of table
 
-warnpc $dfffff
+warnpc($dfffff)
 
 // Relocated credits tilemap to free space in bank CE
-org $ceb240
+seek($ceb240)
 credits:
     // When using big text, it has to be repeated twice, first in UPPERCASE and then in lowercase since it's split into two parts
     // Numbers are mapped in a special way as described below:
     // 0123456789%& '´
     // }!@#$%&/()>~.
     
-    {pink}
+    pink()
     dw "     DASH RANDOMIZER STAFF      " // 128
-    {purple}
+    purple()
     dw "        RANDOMIZER CODE         " // 129
-    {big}
+    big()
     dw "             TOTAL              " // 130
     dw "             total              " // 131
     dw "           DESSYREQT            " // 132
     dw "           dessyreqt            " // 133
-    {purple}
+    purple()
     dw "           SNES CODE            " // 134
-    {big}
+    big()
     dw "             TOTAL              " // 135
     dw "             total              " // 136
     dw "            ANDREWW             " // 137
     dw "            andreww             " // 138
     dw "           PERSONITIS           " // 139
     dw "           personitis           " // 140
-    {purple}
+    purple()
     dw "          ROM PATCHES           " // 141
-    {big}
+    big()
     dw "             TOTAL              " // 142
     dw "             total              " // 143
     dw "            ANDREWW             " // 144
     dw "            andreww             " // 145
     dw "             LEODOX             " // 146
     dw "             leodox             " // 147
-    {cyan}
+    cyan()
     dw "       SPECIAL THANKS TO        " // 148
-    {yellow}
+    yellow()
     dw "   SUPER METROID DISASSEMBLY    " // 149
-    {big}
+    big()
     dw "             PJBOY              " // 150
     dw "             pjboy              " // 151
     dw "            KEJARDON            " // 152
     dw "            kejardon            " // 153
-    {yellow}
+    yellow()
     dw "            TESTERS             " // 154
-    {big}
+    big()
     dw "         FRUITBATSALAD          " // 155
     dw "         fruitbatsalad          " // 156
-    {purple}
+    purple()
     dw "       TECHNICAL SUPPORT        " // 157
-    {big}
+    big()
     dw "          MASSHESTERIA          " // 158
     dw "          masshesteria          " // 159
     dw "           MINIMEMYS            " // 160
     dw "           minimemys            " // 161
-    {purple}
+    purple()
     dw "          LOGO DESIGN           " // 162
     dw "                                " // 163
     dw "          GAME BALANCE          " // 164
-    {big}
+    big()
     dw "                                " // 165
     dw "              KIPP              " // 166
     dw "              kipp              " // 167
@@ -1271,32 +1263,32 @@ credits:
     dw "           maniacal$@           " // 172
     dw "            OSSE101             " // 173
     dw "            osse!}!             " // 174
-    {yellow}
+    yellow()
     dw "      METROID CONSTRUCTION      " // 175
-    {big}
+    big()
     dw "     METROIDCONSTRUCTION COM    " // 176
     dw "     metroidconstruction.com    " // 177
-    {yellow}
+    yellow()
     dw "  SUPER METROID SRL COMMUNITY   " // 178
-    {big}
+    big()
     dw "    DISCORD INVITE . 6RYJM4M    " // 179
     dw "    discord invite . &ryjm$m    " // 180
     dw "      DASHRANDO GITHUB IO       " // 181
     dw "      dashrando.github.io       " // 182
-    {purple}
+    purple()
     dw "      GAMEPLAY STATISTICS       " // 183
-    {orange}
+    orange()
     dw "             DOORS              " // 184
-    {big}
+    big()
     dw " DOOR TRANSITIONS               " // 185
     dw " door transitions               " // 186 
     dw " TIME IN DOORS      00'00'00^00 " // 187
     dw " time in doors                  " // 188 
     dw " TIME ALIGNING DOORS   00'00^00 " // 189
     dw " time aligning doors            " // 190 
-    {blue}
+    blue()
     dw "         TIME SPENT IN          " // 191
-    {big}
+    big()
     dw " CRATERIA           00'00'00^00 " // 192
     dw " crateria                       " // 193
     dw " BRINSTAR           00'00'00^00 " // 194
@@ -1309,9 +1301,9 @@ credits:
     dw " maridia                        " // 201
     dw " TOURIAN            00'00'00^00 " // 202
     dw " tourian                        " // 203
-    {green}
+    green()
     dw "      SHOTS AND AMMO FIRED      " // 204
-    {big}
+    big()
     dw " CHARGED SHOTS                  " // 205
     dw " charged shots                  " // 206
     dw " SPECIAL BEAM ATTACKS           " // 207
@@ -1328,9 +1320,9 @@ credits:
     dw " final time                     " // 218
     dw "       THANKS FOR PLAYING       " // 219
     dw "       thanks for playing       " // 220
-    {cyan}
+    cyan()
     dw "     PLAY THIS RANDOMIZER AT    " // 221
-    {big}
+    big()
     dw "          RUMBLEMINZE           " // 222
     dw "          rumbleminze           " // 223
     dw "           SLOATERS27           " // 224
@@ -1341,10 +1333,10 @@ credits:
     dw "             zeb#!&             " // 229
     dw $0000                              // End of credits tilemap
 
-warnpc $ceffff
+warnpc($ceffff)
 
 // Placeholder label for item locations inserted by the randomizer
-org $ded200
+seek($ded200)
 itemlocations:
-    {pink}
+    pink()
     dw "      MAJOR ITEM LOCATIONS      " // 640
