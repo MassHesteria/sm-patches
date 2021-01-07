@@ -47,45 +47,6 @@ namespace fonts {
    }
 }
 
-macro big_top() {
-   map 'A',$0020,16
-   map 'Q',$0040,10
-   map '\'',$004a    // single quote
-   map '^',$004b     // double quote
-   map '.',$007f     // period (blank on top)
-   map ':',$005a     // colon (period on top & bottom)
-   map '0',$0060,10
-   map '%',$006a
-   map '&',$007b
-   map ' ',$007f
-}
-
-macro big_bottom_alpha() {
-   map ' ',$007F
-   map 'A',$0030,16
-   map 'Q',$0050,10
-   map '0',$007F
-   map '1',$007F
-   map '2',$007F
-   map '3',$007F
-   map '4',$007F
-   map '5',$007F
-   map '6',$007F
-   map '7',$007F
-   map '8',$007F
-   map '9',$007F
-   map '^',$007F
-   map '\'',$007F
-}
-
-macro blank_line() {
-   define i = 0
-   while {i} < 32 {
-      dw $007f
-      evaluate i = {i} + 1
-   }
-}
-
 macro font1(define str, define color) {
    fonts.load_single({color})
    evaluate before = pc()
@@ -104,15 +65,6 @@ macro font2(define str, define color) {
       error "Invalid string length (not 32)"
    }
    fonts.load_double_bottom({color})
-   dw {str}
-   map 0,0,256
-}
-
-macro time2(define str, define color) {
-   fonts.load_double_top({color})
-   dw {str}
-   map 0,0,256
-   big_bottom_alpha()
    dw {str}
    map 0,0,256
 }

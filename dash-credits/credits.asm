@@ -923,25 +923,25 @@ script:
     dw {draw}, {row}*128  // Randomizer staff
     dw {draw}, {blank}
     dw {draw}, {blank}
-    dw {draw}, {row}*164  // Game balance
+    dw {draw}, {row}*163  // Game balance
     dw {draw}, {blank}
+    dw {draw}, {row}*165  // kipp
     dw {draw}, {row}*166
-    dw {draw}, {row}*167
     dw {draw}, {blank}
     dw {draw}, {blank}
     dw {draw}, {row}*129  // Rando code
     dw {draw}, {blank}
-    dw {draw}, {row}*130
+    dw {draw}, {row}*130  // total
     dw {draw}, {row}*131
     dw {draw}, {blank}
-    dw {draw}, {row}*132
+    dw {draw}, {row}*132  // dessyreqt
     dw {draw}, {row}*133
     dw {draw}, {blank}
     dw {draw}, {blank}
     dw {draw}, {row}*141  // ROM patches
     dw {draw}, {blank}
-    dw {draw}, {row}*144  // andreww
-    dw {draw}, {row}*145
+    dw {draw}, {row}*137  // andreww
+    dw {draw}, {row}*138
     dw {draw}, {blank}
     dw {draw}, {row}*146  // leodox
     dw {draw}, {row}*147
@@ -949,28 +949,28 @@ script:
     dw {draw}, {row}*139  // personitis
     dw {draw}, {row}*140
     dw {draw}, {blank}
-    dw {draw}, {row}*168  // smiley
-    dw {draw}, {row}*169
-    dw {draw}, {blank}
-    dw {draw}, {row}*142  // total
+    dw {draw}, {row}*142  // smiley
     dw {draw}, {row}*143
+    dw {draw}, {blank}
+    dw {draw}, {row}*130  // total
+    dw {draw}, {row}*131
     dw {draw}, {blank}
     dw {draw}, {blank}
     dw {draw}, {row}*162  // Logo design
     dw {draw}, {blank}
-    dw {draw}, {row}*160
+    dw {draw}, {row}*160  // minimemys
     dw {draw}, {row}*161
     dw {draw}, {blank}
     dw {draw}, {blank}
-    dw {draw}, {row}*157  // Application and website
+    dw {draw}, {row}*157  // Technical Support
     dw {draw}, {blank}
-    dw {draw}, {row}*158
+    dw {draw}, {row}*158  // masshesteria
     dw {draw}, {row}*159
     dw {draw}, {blank}
     dw {draw}, {blank}
-    dw {draw}, {row}*148  // Special thanks to...
+    dw {draw}, {row}*148  // Special thanks to
     dw {draw}, {blank}
-    dw {draw}, {row}*154  // Testing
+    dw {draw}, {row}*154  // Testers
     dw {draw}, {blank}
     dw {draw}, {row}*137  // andreww
     dw {draw}, {row}*138
@@ -984,17 +984,17 @@ script:
     dw {draw}, {row}*173  // osse
     dw {draw}, {row}*174
     dw {draw}, {blank}
-    dw {draw}, {row}*222  // rumble
-    dw {draw}, {row}*223
+    dw {draw}, {row}*135  // rumble
+    dw {draw}, {row}*136
     dw {draw}, {blank}
-    dw {draw}, {row}*224  // sloaters
-    dw {draw}, {row}*225
+    dw {draw}, {row}*144  // sloaters
+    dw {draw}, {row}*145
     dw {draw}, {blank}
-    dw {draw}, {row}*226  // tracie
-    dw {draw}, {row}*227
+    dw {draw}, {row}*167  // tracie
+    dw {draw}, {row}*168
     dw {draw}, {blank}
-    dw {draw}, {row}*228  // zeb
-    dw {draw}, {row}*229
+    dw {draw}, {row}*169  // zeb
+    dw {draw}, {row}*170
     dw {draw}, {blank}
     dw {draw}, {blank}
     dw {draw}, {row}*149  // Disassembly
@@ -1018,7 +1018,7 @@ script:
     dw {draw}, {row}*180
     dw {draw}, {blank}
     dw {draw}, {blank}
-    dw {draw}, {row}*221  // Play this randomizer at
+    dw {draw}, {row}*164  // Play this randomizer at
     dw {draw}, {blank}
     dw {draw}, {row}*181
     dw {draw}, {row}*182
@@ -1206,12 +1206,12 @@ credits:
     font2("             TOTAL              ", {white})   // 130 + 131
     font2("           DESSYREQT            ", {white})   // 132 + 133
     font1("           SNES CODE            ", {purple})  // 134
-    font2("             TOTAL              ", {white})   // 135 + 136
+    font2("          RUMBLEMINZE           ", {white})   // 135 + 136
     font2("            ANDREWW             ", {white})   // 137 + 138
     font2("           PERSONITIS           ", {white})   // 139 + 140
     font1("          ROM PATCHES           ", {purple})  // 141
-    font2("             TOTAL              ", {white})   // 142 + 143
-    font2("            ANDREWW             ", {white})   // 144 + 145
+    font2("             SMILEY             ", {white})   // 142 + 143
+    font2("           SLOATERS27           ", {white})   // 144 + 145
     font2("             LEODOX             ", {white})   // 146 + 147
     font1("       SPECIAL THANKS TO        ", {cyan})    // 148
     font1("   SUPER METROID DISASSEMBLY    ", {yellow})  // 149
@@ -1223,12 +1223,11 @@ credits:
     font2("          MASSHESTERIA          ", {white})   // 158 + 159
     font2("           MINIMEMYS            ", {white})   // 160 + 161
     font1("          LOGO DESIGN           ", {purple})  // 162
-    blank_line()                                         // 163
-    font1("          GAME BALANCE          ", {purple})  // 164
-    blank_line()                                         // 165
-    font2("              KIPP              ", {white})   // 166 + 167
-    font2("             SMILEY             ", {white})   // 168 + 169
-    blank_line()                                         // 170
+    font1("          GAME BALANCE          ", {purple})  // 163
+    font1("     PLAY THIS RANDOMIZER AT    ", {cyan})    // 164
+    font2("              KIPP              ", {white})   // 165 + 166
+    font2("            TRACIEM             ", {white})   // 167 + 168
+    font2("             ZEB316             ", {white})   // 169 + 170
     font2("           MANIACAL42           ", {white})   // 171 + 172
     font2("            OSSE101             ", {white})   // 173 + 174
     font1("      METROID CONSTRUCTION      ", {yellow})  // 175
@@ -1239,15 +1238,15 @@ credits:
     font1("      GAMEPLAY STATISTICS       ", {purple})  // 183
     font1("             DOORS              ", {orange})  // 184
     font2(" DOOR TRANSITIONS               ", {white})   // 185 + 186
-    time2(" TIME IN DOORS      00'00'00^00 ", {white})   // 187 + 188
-    time2(" TIME ALIGNING DOORS   00'00^00 ", {white})   // 189 + 190
+    font2(" TIME IN DOORS      00'00'00^00 ", {white})   // 187 + 188
+    font2(" TIME ALIGNING DOORS   00'00^00 ", {white})   // 189 + 190
     font1("         TIME SPENT IN          ", {blue})    // 191
-    time2(" CRATERIA           00'00'00^00 ", {white})   // 192 + 193
-    time2(" BRINSTAR           00'00'00^00 ", {white})   // 194 + 195
-    time2(" NORFAIR            00'00'00^00 ", {white})   // 196 + 197
-    time2(" WRECKED SHIP       00'00'00^00 ", {white})   // 198 + 199
-    time2(" MARIDIA            00'00'00^00 ", {white})   // 200 + 201
-    time2(" TOURIAN            00'00'00^00 ", {white})   // 202 + 203
+    font2(" CRATERIA           00'00'00^00 ", {white})   // 192 + 193
+    font2(" BRINSTAR           00'00'00^00 ", {white})   // 194 + 195
+    font2(" NORFAIR            00'00'00^00 ", {white})   // 196 + 197
+    font2(" WRECKED SHIP       00'00'00^00 ", {white})   // 198 + 199
+    font2(" MARIDIA            00'00'00^00 ", {white})   // 200 + 201
+    font2(" TOURIAN            00'00'00^00 ", {white})   // 202 + 203
     font1("      SHOTS AND AMMO FIRED      ", {green})   // 204
     font2(" CHARGED SHOTS                  ", {white})   // 205 + 206
     font2(" SPECIAL BEAM ATTACKS           ", {white})   // 207 + 208
@@ -1255,13 +1254,8 @@ credits:
     font2(" SUPER MISSILES                 ", {white})   // 211 + 212
     font2(" POWER BOMBS                    ", {white})   // 213 + 214
     font2(" BOMBS                          ", {white})   // 215 + 216
-    time2(" FINAL TIME         00'00'00^00 ", {white})   // 217 + 218
+    font2(" FINAL TIME         00'00'00^00 ", {white})   // 217 + 218
     font2("       THANKS FOR PLAYING       ", {white})   // 219 + 220
-    font1("     PLAY THIS RANDOMIZER AT    ", {cyan})    // 221
-    font2("          RUMBLEMINZE           ", {white})   // 222 + 223
-    font2("           SLOATERS27           ", {white})   // 224 + 225
-    font2("            TRACIEM             ", {white})   // 226 + 227
-    font2("             ZEB316             ", {white})   // 228 + 229
     dw $0000                              // End of credits tilemap
 
 warnpc($ceffff)
