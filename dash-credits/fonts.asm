@@ -1,68 +1,118 @@
-macro load_font(define base_addr) {
-   map 'A',{base_addr},26
-   map '.',{base_addr}+$1A
-   map ',',{base_addr}+$1B
-   map '_',{base_addr}+$1C
-   map '\'',{base_addr}+$1D
-   map ':',{base_addr}+$1E
-   map '!',{base_addr}+$1F
-   map ' ',$007F
+define white = $0000
+define yellow = $0400
+define cyan = $0800
+define green = $0C00
+define pink = $1000
+define blue = $1400
+define orange = $1800
+define purple = $1C00
+
+namespace fonts {
+
+   macro load_single(define base) {
+      map 'A',{base},26
+      map '.',{base}+$1A
+      map ',',{base}+$1B
+      map '_',{base}+$1C
+      map '\'',{base}+$1D
+      map ':',{base}+$1E
+      map '!',{base}+$1F
+      map ' ',$007F
+   }
+
+   macro load_double_top(define base) {
+      map 'A',{base}+$20,16
+      map 'Q',{base}+$40,10
+      map '\'',{base}+$4a    // single quote
+      map '^',{base}+$4b     // double quote
+      map '.',$007f          // period (blank on top)
+      map ':',{base}+$5a     // colon (period on top & bottom)
+      map '0',{base}+$60,10
+      map '%',{base}+$6a
+      map '&',{base}+$7b
+      map ' ',$007f
+   }
+
+   macro load_double_bottom(define base) {
+      map 'A',{base}+$30,16
+      map 'Q',{base}+$50,10
+      map '\'',$007f         // single quote (blank on bottom)
+      map '^',$007f          // double quote (blank on bottom)
+      map '.',{base}+$5a     // period
+      map ':',{base}+$5a     // colon (period on top & bottom)
+      map '0',{base}+$70,10
+      map '%',{base}+$7a
+      map '&',{base}+$7c
+      map ' ',$007f
+   }
 }
 
-macro yellow() {
-   load_font($0400)
-}
-
-macro cyan() {
-   load_font($0800)
-}
-
-macro green() {
-   load_font($0C00)
-}
-
-macro pink() {
-   load_font($1000)
-}
-
-macro blue() {
-   load_font($1400)
-}
-
-macro orange() {
-   load_font($1800)
-}
-
-macro purple() {
-   load_font($1C00)
-}
-
-macro big() {
-   map ' ',$007F
-   map '&',$007B
-   map '~',$007C
-   map '!',$007D
-   map '|',$007E
+macro big_top() {
    map 'A',$0020,16
-   map 'a',$0030,16
    map 'Q',$0040,10
-   map '\'',$004a
-   map '^',$004b
-   map '_',$004f
-   map 'q',$0050,10
-   map '.',$005a
+   map '\'',$004a    // single quote
+   map '^',$004b     // double quote
+   map '.',$007f     // period (blank on top)
+   map ':',$005a     // colon (period on top & bottom)
    map '0',$0060,10
    map '%',$006a
-   map '}',$0070
-   map '!',$0071
-   map '@',$0072
-   map '#',$0073
-   map '$',$0074
-   map '%',$0075
-   map '&',$0076
-   map '/',$0077
-   map '(',$0078
-   map ')',$0079
-   map '>',$007a
-   map ':',$001e
+   map '&',$007b
+   map ' ',$007f
+}
+
+macro big_bottom_alpha() {
+   map ' ',$007F
+   map 'A',$0030,16
+   map 'Q',$0050,10
+   map '0',$007F
+   map '1',$007F
+   map '2',$007F
+   map '3',$007F
+   map '4',$007F
+   map '5',$007F
+   map '6',$007F
+   map '7',$007F
+   map '8',$007F
+   map '9',$007F
+   map '^',$007F
+   map '\'',$007F
+}
+
+macro blank_line() {
+   define i = 0
+   while {i} < 32 {
+      dw $007f
+      evaluate i = {i} + 1
+   }
+}
+
+macro font1(define str, define color) {
+   fonts.load_single({color})
+   evaluate before = pc()
+   dw {str}
+   if pc() - 64 != {before} {
+      error "Invalid string length (not 32)"
+   }
+   map 0,0,256
+}
+
+macro font2(define str, define color) {
+   fonts.load_double_top({color})
+   evaluate before = pc()
+   dw {str}
+   if pc() - 64 != {before} {
+      error "Invalid string length (not 32)"
+   }
+   fonts.load_double_bottom({color})
+   dw {str}
+   map 0,0,256
+}
+
+macro time2(define str, define color) {
+   fonts.load_double_top({color})
+   dw {str}
+   map 0,0,256
+   big_bottom_alpha()
+   dw {str}
+   map 0,0,256
 }

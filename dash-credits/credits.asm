@@ -742,7 +742,7 @@ script:
     dw {draw}, {row}*4      // PRODUCER
     dw {draw}, {blank}
     dw {draw}, {row}*7      // MAKOTO KANOH
-    dw {draw}, {row}*8      
+    dw {draw}, {row}*8       
     dw {draw}, {blank}
     dw {draw}, {row}*9      // DIRECTOR
     dw {draw}, {blank}
@@ -1195,142 +1195,73 @@ warnpc($dfffff)
 // Relocated credits tilemap to free space in bank CE
 seek($ceb240)
 credits:
-    // When using big text, it has to be repeated twice, first in UPPERCASE and then in lowercase since it's split into two parts
-    // Numbers are mapped in a special way as described below:
-    // 0123456789%& '´
-    // }!@#$%&/()>~.
+    // Single line characters:
+    //   ABCDEFGHIJKLMNOPQRSTUVWXYZ.,':!
+    // Double line characters:
+    //   ABCDEFGHIJKLMNOPQRSTUVWXYZ.^':%&
+    //   0123456789
     
-    pink()
-    dw "     DASH RANDOMIZER STAFF      " // 128
-    purple()
-    dw "        RANDOMIZER CODE         " // 129
-    big()
-    dw "             TOTAL              " // 130
-    dw "             total              " // 131
-    dw "           DESSYREQT            " // 132
-    dw "           dessyreqt            " // 133
-    purple()
-    dw "           SNES CODE            " // 134
-    big()
-    dw "             TOTAL              " // 135
-    dw "             total              " // 136
-    dw "            ANDREWW             " // 137
-    dw "            andreww             " // 138
-    dw "           PERSONITIS           " // 139
-    dw "           personitis           " // 140
-    purple()
-    dw "          ROM PATCHES           " // 141
-    big()
-    dw "             TOTAL              " // 142
-    dw "             total              " // 143
-    dw "            ANDREWW             " // 144
-    dw "            andreww             " // 145
-    dw "             LEODOX             " // 146
-    dw "             leodox             " // 147
-    cyan()
-    dw "       SPECIAL THANKS TO        " // 148
-    yellow()
-    dw "   SUPER METROID DISASSEMBLY    " // 149
-    big()
-    dw "             PJBOY              " // 150
-    dw "             pjboy              " // 151
-    dw "            KEJARDON            " // 152
-    dw "            kejardon            " // 153
-    yellow()
-    dw "            TESTERS             " // 154
-    big()
-    dw "         FRUITBATSALAD          " // 155
-    dw "         fruitbatsalad          " // 156
-    purple()
-    dw "       TECHNICAL SUPPORT        " // 157
-    big()
-    dw "          MASSHESTERIA          " // 158
-    dw "          masshesteria          " // 159
-    dw "           MINIMEMYS            " // 160
-    dw "           minimemys            " // 161
-    purple()
-    dw "          LOGO DESIGN           " // 162
-    dw "                                " // 163
-    dw "          GAME BALANCE          " // 164
-    big()
-    dw "                                " // 165
-    dw "              KIPP              " // 166
-    dw "              kipp              " // 167
-    dw "             SMILEY             " // 168
-    dw "             smiley             " // 169
-    dw "                                " // 170
-    dw "           MANIACAL42           " // 171
-    dw "           maniacal$@           " // 172
-    dw "            OSSE101             " // 173
-    dw "            osse!}!             " // 174
-    yellow()
-    dw "      METROID CONSTRUCTION      " // 175
-    big()
-    dw "     METROIDCONSTRUCTION COM    " // 176
-    dw "     metroidconstruction.com    " // 177
-    yellow()
-    dw "  SUPER METROID SRL COMMUNITY   " // 178
-    big()
-    dw "    DISCORD INVITE . 6RYJM4M    " // 179
-    dw "    discord invite . &ryjm$m    " // 180
-    dw "      DASHRANDO GITHUB IO       " // 181
-    dw "      dashrando.github.io       " // 182
-    purple()
-    dw "      GAMEPLAY STATISTICS       " // 183
-    orange()
-    dw "             DOORS              " // 184
-    big()
-    dw " DOOR TRANSITIONS               " // 185
-    dw " door transitions               " // 186 
-    dw " TIME IN DOORS      00'00'00^00 " // 187
-    dw " time in doors                  " // 188 
-    dw " TIME ALIGNING DOORS   00'00^00 " // 189
-    dw " time aligning doors            " // 190 
-    blue()
-    dw "         TIME SPENT IN          " // 191
-    big()
-    dw " CRATERIA           00'00'00^00 " // 192
-    dw " crateria                       " // 193
-    dw " BRINSTAR           00'00'00^00 " // 194
-    dw " brinstar                       " // 195
-    dw " NORFAIR            00'00'00^00 " // 196
-    dw " norfair                        " // 197
-    dw " WRECKED SHIP       00'00'00^00 " // 198
-    dw " wrecked ship                   " // 199
-    dw " MARIDIA            00'00'00^00 " // 200
-    dw " maridia                        " // 201
-    dw " TOURIAN            00'00'00^00 " // 202
-    dw " tourian                        " // 203
-    green()
-    dw "      SHOTS AND AMMO FIRED      " // 204
-    big()
-    dw " CHARGED SHOTS                  " // 205
-    dw " charged shots                  " // 206
-    dw " SPECIAL BEAM ATTACKS           " // 207
-    dw " special beam attacks           " // 208
-    dw " MISSILES                       " // 209
-    dw " missiles                       " // 210
-    dw " SUPER MISSILES                 " // 211
-    dw " super missiles                 " // 212
-    dw " POWER BOMBS                    " // 213
-    dw " power bombs                    " // 214
-    dw " BOMBS                          " // 215
-    dw " bombs                          " // 216
-    dw " FINAL TIME         00'00'00^00 " // 217
-    dw " final time                     " // 218
-    dw "       THANKS FOR PLAYING       " // 219
-    dw "       thanks for playing       " // 220
-    cyan()
-    dw "     PLAY THIS RANDOMIZER AT    " // 221
-    big()
-    dw "          RUMBLEMINZE           " // 222
-    dw "          rumbleminze           " // 223
-    dw "           SLOATERS27           " // 224
-    dw "           sloaters@/           " // 225
-    dw "            TRACIEM             " // 226
-    dw "            traciem             " // 227
-    dw "             ZEB316             " // 228
-    dw "             zeb#!&             " // 229
+    font1("     DASH RANDOMIZER STAFF      ", {pink})    // 128
+    font1("        RANDOMIZER CODE         ", {purple})  // 129
+    font2("             TOTAL              ", {white})   // 130 + 131
+    font2("           DESSYREQT            ", {white})   // 132 + 133
+    font1("           SNES CODE            ", {purple})  // 134
+    font2("             TOTAL              ", {white})   // 135 + 136
+    font2("            ANDREWW             ", {white})   // 137 + 138
+    font2("           PERSONITIS           ", {white})   // 139 + 140
+    font1("          ROM PATCHES           ", {purple})  // 141
+    font2("             TOTAL              ", {white})   // 142 + 143
+    font2("            ANDREWW             ", {white})   // 144 + 145
+    font2("             LEODOX             ", {white})   // 146 + 147
+    font1("       SPECIAL THANKS TO        ", {cyan})    // 148
+    font1("   SUPER METROID DISASSEMBLY    ", {yellow})  // 149
+    font2("             PJBOY              ", {white})   // 150 + 151
+    font2("            KEJARDON            ", {white})   // 152 + 153
+    font1("            TESTERS             ", {yellow})  // 154
+    font2("         FRUITBATSALAD          ", {white})   // 155 + 156
+    font1("       TECHNICAL SUPPORT        ", {purple})  // 157
+    font2("          MASSHESTERIA          ", {white})   // 158 + 159
+    font2("           MINIMEMYS            ", {white})   // 160 + 161
+    font1("          LOGO DESIGN           ", {purple})  // 162
+    blank_line()                                         // 163
+    font1("          GAME BALANCE          ", {purple})  // 164
+    blank_line()                                         // 165
+    font2("              KIPP              ", {white})   // 166 + 167
+    font2("             SMILEY             ", {white})   // 168 + 169
+    blank_line()                                         // 170
+    font2("           MANIACAL42           ", {white})   // 171 + 172
+    font2("            OSSE101             ", {white})   // 173 + 174
+    font1("      METROID CONSTRUCTION      ", {yellow})  // 175
+    font2("     METROIDCONSTRUCTION.COM    ", {white})   // 176 + 177
+    font1("  SUPER METROID SRL COMMUNITY   ", {yellow})  // 178
+    font2("    DISCORD INVITE : 6RYJM4M    ", {white})   // 179 + 180
+    font2("      DASHRANDO.GITHUB.IO       ", {white})   // 181 + 182
+    font1("      GAMEPLAY STATISTICS       ", {purple})  // 183
+    font1("             DOORS              ", {orange})  // 184
+    font2(" DOOR TRANSITIONS               ", {white})   // 185 + 186
+    time2(" TIME IN DOORS      00'00'00^00 ", {white})   // 187 + 188
+    time2(" TIME ALIGNING DOORS   00'00^00 ", {white})   // 189 + 190
+    font1("         TIME SPENT IN          ", {blue})    // 191
+    time2(" CRATERIA           00'00'00^00 ", {white})   // 192 + 193
+    time2(" BRINSTAR           00'00'00^00 ", {white})   // 194 + 195
+    time2(" NORFAIR            00'00'00^00 ", {white})   // 196 + 197
+    time2(" WRECKED SHIP       00'00'00^00 ", {white})   // 198 + 199
+    time2(" MARIDIA            00'00'00^00 ", {white})   // 200 + 201
+    time2(" TOURIAN            00'00'00^00 ", {white})   // 202 + 203
+    font1("      SHOTS AND AMMO FIRED      ", {green})   // 204
+    font2(" CHARGED SHOTS                  ", {white})   // 205 + 206
+    font2(" SPECIAL BEAM ATTACKS           ", {white})   // 207 + 208
+    font2(" MISSILES                       ", {white})   // 209 + 210
+    font2(" SUPER MISSILES                 ", {white})   // 211 + 212
+    font2(" POWER BOMBS                    ", {white})   // 213 + 214
+    font2(" BOMBS                          ", {white})   // 215 + 216
+    time2(" FINAL TIME         00'00'00^00 ", {white})   // 217 + 218
+    font2("       THANKS FOR PLAYING       ", {white})   // 219 + 220
+    font1("     PLAY THIS RANDOMIZER AT    ", {cyan})    // 221
+    font2("          RUMBLEMINZE           ", {white})   // 222 + 223
+    font2("           SLOATERS27           ", {white})   // 224 + 225
+    font2("            TRACIEM             ", {white})   // 226 + 227
+    font2("             ZEB316             ", {white})   // 228 + 229
     dw $0000                              // End of credits tilemap
 
 warnpc($ceffff)
@@ -1338,5 +1269,4 @@ warnpc($ceffff)
 // Placeholder label for item locations inserted by the randomizer
 seek($ded200)
 itemlocations:
-    pink()
-    dw "      MAJOR ITEM LOCATIONS      " // 640
+    font1("      MAJOR ITEM LOCATIONS      ", {pink}) // 640
