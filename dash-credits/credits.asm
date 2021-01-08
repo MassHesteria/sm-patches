@@ -256,7 +256,7 @@ copy:
     ldx #$0000
 -
     lda.l credits,x
-    cmp #$0000
+    cmp #$dead
     beq +
     sta $7f2000,x
     inx
@@ -1256,7 +1256,7 @@ credits:
     font2(" BOMBS                          ", {white})   // 215 + 216
     font2(" FINAL TIME         00'00'00^00 ", {white})   // 217 + 218
     font2("       THANKS FOR PLAYING       ", {white})   // 219 + 220
-    dw $0000                              // End of credits tilemap
+    dw $dead                              // End of credits tilemap
 
 warnpc($ceffff)
 

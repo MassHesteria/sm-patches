@@ -18,11 +18,6 @@ a base value and increment like this:
 `1E = :`  
 `1F = !`  
 
-*NOTE: The single line font for a white A is 0000, but that is
-also used as the indicator that we have reached the end of the
-credits. This makes using that character impossible until the
-trick is figured out to resolve this.*
-
 ## Double Line Fonts
 
 Double line fonts require two tiles (top & bottom) to represent

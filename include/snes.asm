@@ -23,6 +23,6 @@ macro insert_nop(define num) {
 
 macro warnpc(variable addr) {
    if (pc() >= addr) {
-      print "warnpc! exceeded: ",hex:addr,"\n"
+      error "warnpc! exceeded: ",hex:addr
    }
 }
