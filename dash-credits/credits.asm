@@ -402,77 +402,87 @@ draw_time:
 // Draw 5-digit value to credits tilemap
 // A = number to draw, Y = row address
 draw_value:
-    phx    
-    phb
-    pea $7f7f; plb; plb
-    sta $004204
-    lda #$0000
-    sta $1a     // Leading zeroes flag
-    sep #$20
-    lda #$64
-    sta $004206
-    pha; pla; pha; pla; rep #$20
-    lda $004216 // Last two digits
-    sta $12
-    lda $004214 // Top three digits
-    jsr draw_three
-    lda $12
-    jsr draw_two
-    plb
-    plx
-    rts
+  phx    
+  phb
+  pea $7f7f; plb; plb
+  sta $004204
+  stz $1a     // Leading zeroes flag
+  sep #$20
+  lda #$64
+  sta $004206
+  pha; pla; pha; pla; rep #$20
+  lda $004216 // Last two digits
+  sta $12
+  lda $004214 // Top three digits
+  jsr draw_three
+  lda $12
+  jsr draw_two
+  plb
+  plx
+  rts
 
 draw_three:
-    sta $004204
-    sep #$20
-    lda #$64
-    sta $004206
-    pha; pla; pha; pla; rep #$20
-    lda $004214 // Hundreds
-    asl
-    tax
-    cmp $1a
-    beq +
-    lda numbers_top,x
-    sta $0034,y
-    lda numbers_bot,x
-    sta $0074,y
-    dec $1a
-+
-    iny; iny // Next number
-    lda $004216
+  sta $004204
+  sep #$20
+  lda #$64
+  sta $004206
+  pha; pla; pha; pla; rep #$20
+
+  lda $004214 // Hundreds
+  jsr draw_digit_without_padding
+  iny; iny
+
+  lda $004216
+  jsr div10
+
+  lda $004214
+  jsr draw_digit_without_padding
+  iny; iny
+
+  lda $004216
+  jsr draw_digit_without_padding
+  iny; iny
+  rts
 
 draw_two:
-    sta $004204
-    sep #$20
-    lda #$0a
-    sta $004206
-    pha; pla; pha; pla; rep #$20
-    lda $004214
-    asl
-    tax
-    cmp $1a
-    beq +
-    lda numbers_top,x
-    sta $0034,y
-    lda numbers_bot,x
-    sta $0074,y
-    dec $1a
-+
-    lda $004216
-    asl
-    tax
-    cmp $1a
-    beq +
-    lda numbers_top,x
-    sta $0036,y
-    lda numbers_bot,x
-    sta $0076,y
-    dec $1a
-+
-    iny; iny; iny; iny
-    rts
+  jsr div10
 
+  lda $004214
+  cmp $1a
+  beq +
+  jsr draw_digit; +
+  iny; iny
+
+  lda $004216
+  jsr draw_digit
+  iny; iny
+
+  rts
+
+div10:
+  sta $004204
+  sep #$20
+  lda #$0a
+  sta $004206
+  pha; pla; pha; pla; rep #$20
+  rts
+
+draw_digit_without_padding:
+  beq +
+
+draw_digit:
+  asl
+  tax
+  lda numbers_top,x
+  sta $0034,y
+  lda numbers_bot,x
+  sta $0074,y; +
+  rts
+
+print hex:pc(),"\n"
+warnpc($dfd635)
+
+seek($dfd635)
 // Loop through stat table and update RAM with numbers representing those stats
 write_stats:
     phy

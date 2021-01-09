@@ -1,3 +1,4 @@
 *.sfc
 .DS_Store
 *.srm
+*_bak.asm
