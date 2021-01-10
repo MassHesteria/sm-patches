@@ -405,35 +405,35 @@ draw_value:
   phx    
   phb
   pea $7f7f; plb; plb
-  sta $004204
   stz $1a     // Leading zeroes flag
-  sep #$20
-  lda #$64
-  sta $004206
-  pha; pla; pha; pla; rep #$20
-  lda $004216 // Last two digits
-  sta $12
-  lda $004214 // Top three digits
+
+  ldx #100
+  jsr integer_division
+
+  lda $004216 // Load the last two digits
+  pha         // Push last two digits onto the stack
+
+  lda $004214 // Load the top three digits
   jsr draw_three
-  lda $12
+
+  pla         // Pull last two digits from the stack
   jsr draw_two
+
   plb
   plx
   rts
 
 draw_three:
-  sta $004204
-  sep #$20
-  lda #$64
-  sta $004206
-  pha; pla; pha; pla; rep #$20
+  ldx #100
+  jsr integer_division
 
   lda $004214 // Hundreds
   jsr draw_digit_without_padding
   iny; iny
 
   lda $004216
-  jsr div10
+  ldx #10
+  jsr integer_division
 
   lda $004214
   jsr draw_digit_without_padding
@@ -445,7 +445,8 @@ draw_three:
   rts
 
 draw_two:
-  jsr div10
+  ldx #10
+  jsr integer_division 
 
   lda $004214
   cmp $1a
@@ -459,10 +460,12 @@ draw_two:
 
   rts
 
-div10:
+// A = dividend, X = divisor
+// $004214 = quotient, $004216 = remainder
+integer_division:
   sta $004204
   sep #$20
-  lda #$0a
+  txa
   sta $004206
   pha; pla; pha; pla; rep #$20
   rts
@@ -479,7 +482,6 @@ draw_digit:
   sta $0074,y; +
   rts
 
-print hex:pc(),"\n"
 warnpc($dfd635)
 
 seek($dfd635)
@@ -1265,7 +1267,7 @@ credits:
     font2(" POWER BOMBS                    ", {white})   // 213 + 214
     font2(" BOMBS                          ", {white})   // 215 + 216
     font2(" FINAL TIME         00'00'00^00 ", {white})   // 217 + 218
-    font2("       THANKS FOR PLAYING       ", {white})   // 219 + 220
+    font2("       THANKS FOR PLAYING       ", {green})   // 219 + 220
     dw $dead                              // End of credits tilemap
 
 warnpc($ceffff)
@@ -1274,3 +1276,36 @@ warnpc($ceffff)
 seek($ded200)
 itemlocations:
     font1("      MAJOR ITEM LOCATIONS      ", {pink}) // 640
+    font1("MORPH BALL                      ", {yellow})
+    font1("................................", {orange})
+    font1("BOMB                            ", {yellow})
+    font1("................................", {orange})
+    font1("CHARGE BEAM                     ", {yellow})
+    font1("................................", {orange})
+    font1("ICE BEAM                        ", {yellow})
+    font1("................................", {orange})
+    font1("WAVE BEAM                       ", {yellow})
+    font1("................................", {orange})
+    font1("SPAZER                          ", {yellow})
+    font1("................................", {orange})
+    font1("PLASMA BEAM                     ", {yellow})
+    font1("................................", {orange})
+    font1("VARIA SUIT                      ", {yellow})
+    font1("................................", {orange})
+    font1("GRAVITY SUIT                    ", {yellow})
+    font1("................................", {orange})
+    font1("HIJUMP BOOTS                    ", {yellow})
+    font1("................................", {orange})
+    font1("SPACE JUMP                      ", {yellow})
+    font1("................................", {orange})
+    font1("SPEED BOOSTER                   ", {yellow})
+    font1("................................", {orange})
+    font1("SCREW ATTACK                    ", {yellow})
+    font1("................................", {orange})
+    font1("SPRING BALL                     ", {yellow})
+    font1("................................", {orange})
+    font1("XRAY SCOPE                      ", {yellow})
+    font1("................................", {orange})
+    font1("GRAPPLING BEAM                  ", {yellow})
+    font1("................................", {orange})
+    dd 0

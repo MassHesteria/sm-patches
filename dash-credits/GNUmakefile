@@ -27,9 +27,10 @@ ifeq ($(platform),)
   endif
 endif
 
-all:
-	@cp ../tools/DASH_v10_SM_68081.sfc credits.sfc
+test: release
+	$(build) -m credits.sfc test_credits.asm
+
+release:
+	@cp ../tools/SuperMetroid.sfc credits.sfc
 	$(build) -m credits.sfc tracking.asm
-	@diff ../tools/DASH_v10_SM_68081.sfc credits.sfc
 	$(build) -m credits.sfc credits.asm
-	@diff ../tools/DASH_v10_SM_68081.sfc credits.sfc
