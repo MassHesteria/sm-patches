@@ -32,5 +32,4 @@ test: release
 
 release:
 	@cp ../tools/SuperMetroid.sfc credits.sfc
-	$(build) -m credits.sfc tracking.asm
 	$(build) -m credits.sfc credits.asm

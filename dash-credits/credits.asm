@@ -1,4 +1,5 @@
 include "../include/snes.asm"
+include "tracking.asm"
 include "fonts.asm"
 
 // Defines for the script and credits data
@@ -15,8 +16,6 @@ define timer_backup1 = $7fffe2
 define timer_backup2 = $7fffe4
 define softreset = $7fffe6
 define scroll_speed = $7fffe8
-define timer1 = $05b8
-define timer2 = $05ba
 
 // Patch soft reset to retain value of RTA counter
 seek($80844B)
@@ -55,7 +54,7 @@ seek($8b9a19)
 
 // Hijack when samus is in the ship and ready to leave the planet
 seek($a2ab13)
-    jsl game_end
+  jsl game_end
 
 // Patch NMI to skip resetting 05ba and instead use that as an extra time counter
 seek($8095e5)
@@ -315,24 +314,25 @@ clear_value_ret:
     rtl
 
 // Game has ended, save RTA timer to RAM and copy all stats to SRAM a final time
-game_end:
-    lda {timer1}    
-    sta $7ffc00
-    lda {timer2}
-    sta $7ffc02
+function game_end {
+  lda {timer1}
+  sta $7ffc00
+  lda {timer2}
+  sta $7ffc02
 
-    // Subtract frames from pressing down at ship to this code running
-    lda $7ffc00
-    sec
-    sbc #$013d
-    sta $7ffc00
-    lda #$0000  // if carry clear this will subtract one from the high byte of timer
-    sbc $7ffc02
+  // Subtract frames from pressing down at ship to this code running
+  lda $7ffc00
+  sec
+  sbc #$013d
+  sta $7ffc00
+  lda #$0000  // if carry clear this will subtract one from the high byte of timer
+  sbc $7ffc02
 
-    jsl save_stats
-    lda #$000a
-    jsl $90f084
-    rtl
+  jsl save_stats
+  lda #$000a
+  jsl $90f084
+  rtl
+}
 
 seek($dfd4f0)
 // Draw full time as hh:mm:ss:ff
@@ -692,54 +692,6 @@ save_end:
     rtl
 
 warnpc($dfd800)
-// Increment Statistic (in A)
-seek($dfd800)
-inc_stat:
-    phx
-    asl
-    tax
-    lda $7ffc00,x
-    inc
-    sta $7ffc00,x
-    plx
-    rtl
-
-// Decrement Statistic (in A)
-seek($dfd840)
-dec_stat:
-    phx
-    asl
-    tax
-    lda $7ffc00,x
-    dec
-    sta $7ffc00,x
-    plx
-    rtl
-
-
-// Store Statistic (value in A, stat in X)
-seek($dfd880)
-store_stat:
-    phx
-    pha
-    txa
-    asl
-    tax
-    pla
-    sta $7ffc00,x
-    plx
-    rtl
-
-// Load Statistic (stat in A, returns value in A)
-seek($dfd8b0)
-load_stat:
-    phx
-    asl
-    tax
-    lda $7ffc00,x
-    plx
-    rtl
-
 
 // New credits script in free space of bank $DF
 seek($dfd91b)
