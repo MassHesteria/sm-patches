@@ -2,3 +2,8 @@
 .DS_Store
 *.srm
 *_bak.asm
+*.bp
+*.sym
+*.swp
+*.log
+*.ips
