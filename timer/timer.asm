@@ -174,14 +174,18 @@ end:
 hex_map:
 dw $0c09,$0c00,$0c01,$0c02,$0c03,$0c04,$0c05,$0c06,$0c07,$0c08,$0ce0,$0ce1,$0ce2,$0ce3,$0ce4,$0ce5
 
+//
+macro initialize_timer() {
+  lda.w #$0000
+  sta $7ffc00
+  sta $7ffc02
+  sta $7ffc04
+  sta $7ffc06
+}
+
 // Minimap update during HUD loading
 seek($90A8EF)
-lda.w #$0000
-sta $7ffc00
-sta $7ffc02
-sta $7ffc04
-sta $7ffc06
-//stz $7ffc00
+initialize_timer()
 rtl
 
 // Runs after minimap grid has been drawn
