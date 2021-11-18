@@ -29,4 +29,4 @@ endif
 
 release:
 	@cp ../tools/SuperMetroid.sfc introskip.sfc
-	$(build) -m introskip.sfc introskip.asm
+	$(build) -m introskip.sfc introskip.bas
