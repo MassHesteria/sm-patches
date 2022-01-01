@@ -50,24 +50,32 @@ macro DrawNextChar()
 
 endmacro
 
+macro DrawSingleNumber(cursorPos)
+  ldy.w <cursorPos>
+  and #$000f
+  asl
+  tax
+  lda WhiteNumbers,x
+  tyx
+  sta $7ec608,x
+endmacro
+
 org $80d000
 DrawHUD: {
 
-  ;
+  ; Set the cursor position for drawing
   ldy.w #52
 
-  ; Load the subarea in X
-  lda !sub_area
+  ; Load the subarea
+  lda !SRAM_SubArea
+
+  ; Multiply by 12 and move to X
   pha
   asl
   adc $01,s
   asl
   asl
   tax
-
-  ; Lookup the area name
-  ; lda AreaLookup,x
-  ; tax
 
   %DrawNextChar()
   %DrawNextChar()
@@ -78,13 +86,17 @@ DrawHUD: {
 
   pla
 
-  ldy.w #122
-  lda !count_crateria
-  asl
-  tax
-  lda WhiteNumbers,x
-  tyx
-  sta $7ec608,x
+  ; Load the counter for the current sub area
+  %LoadCounter()
+
+  ; Draw the energy tank count (lo byte)
+  pha
+  %DrawSingleNumber(#122)
+
+  ; Draw the item count (hi byte)
+  pla
+  xba
+  %DrawSingleNumber(#126)
 
   ; *** HIJACKED CODE (DO NOT MODIFY) ***
   ply
@@ -95,8 +107,6 @@ DrawHUD: {
   rti
 }
 
-; hex_map:
-;dw $0c09,$0c00,$0c01,$0c02,$0c03,$0c04,$0c05,$0c06,$0c07,$0c08,$0ce0,$0ce1,$0ce2,$0ce3,$0ce4,$0ce5
 pushtable
 table "font_white.tbl",rtl
 WhiteNumbers: {
@@ -107,22 +117,19 @@ pulltable
 pushtable
 table "font_yellow.tbl",rtl
 AreaNames: {
-  dw "CRATER" ; 0
-  dw "BRIN  " ; 1
-  dw "NORFAI" ; 2
+  dw "CRATER" ; 0 (includes Blue Brinstar)
+  dw "G BRIN" ; 1 (Brinstar)
+  dw "U NORF" ; 2 (Norfair)
   dw "W SHIP" ; 3
-  dw "MARID " ; 4
+  dw "E MAR " ; 4 (Maridia)
   dw "TOUR  " ; 5
   dw "CERES " ; 6
   dw "DEBUG " ; 7
-  dw "G BRIN" ; 8
-  dw "R BRIN" ; 9
-  dw "KRAID " ; a
-  dw "W MAR " ; b
-  dw "E MAR " ; c
-  dw "U NORF" ; d
-  dw "L NORF" ; e
-  dw "CROC  " ; f
+  dw "R BRIN" ; 8
+  dw "KRAID " ; 9
+  dw "W MAR " ; a
+  dw "U NORF" ; b
+  dw "CROC  " ; c
 }
 pulltable
 
