@@ -1,7 +1,7 @@
 incsrc "globals.asm"
 
 ;
-!Counters = $701700
+!Counters = $7edcba
 
 ;
 macro LoadCounter()
@@ -18,11 +18,12 @@ macro LoadCounter()
 
 endmacro
 
-org $828063
+; HUD Initialization Code
+org $809b3d
 jsl InitializeCounters
 
 ; Beam Collection Code
-org $8488e8
+org $8488eb
 jsl DecrementItem
 
 ; Equipment Collection Code
@@ -45,7 +46,11 @@ jsl DecrementTank
 org $84f000
 
 InitializeCounters: {
-  jsl $809a79
+
+  ;
+  pha
+  phx
+  php
 
   lda $7e0998   ; load game state in A
   cmp #$001f    ; Check if Game State is Setup New Game (Post Intro)
@@ -57,15 +62,25 @@ InitializeCounters: {
   tax
 
   .Loop {
-    cpx #$18
+    cpx #$001a
     beq +
     lda $dfff10,x           ;
     sta !Counters,x
     inx
     inx
+    bra .Loop
   }
 
-+ rtl
+  ;
++ plp
+  plx
+  pla
+
+  ; HIJACKED CODE (DO NOT MODIFY)
+  jsl $809b44
+
+  ;
+  rtl
 }
 
 DecrementItem: {

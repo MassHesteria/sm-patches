@@ -1,3 +1,4 @@
+incsrc "globals.asm"
 incsrc "counter.asm"
 incsrc "sub_areas.asm"
 
@@ -17,8 +18,8 @@ skip 52
 dw "      "
 pulltable
 
-org $8095fc
-jml DrawHUD
+org $8095e7
+jsr DrawHUD
 
 macro DrawNextChar()
 
@@ -50,18 +51,30 @@ macro DrawNextChar()
 
 endmacro
 
-macro DrawSingleNumber(cursorPos)
+macro DrawSingleNumber(cursorPos,colorLabel)
   ldy.w <cursorPos>
   and #$000f
   asl
   tax
-  lda WhiteNumbers,x
+  lda <colorLabel>,x
   tyx
   sta $7ec608,x
 endmacro
 
 org $80d000
 DrawHUD: {
+
+  ; Hijacked code (DO NOT MODIFY)
+  stx $05b4
+
+  ;
+  pha
+  phx
+  phy
+  php
+
+  ; Switch to 16-bit indexing for the X and Y registers
+  rep #$10
 
   ; Set the cursor position for drawing
   ldy.w #52
@@ -91,25 +104,29 @@ DrawHUD: {
 
   ; Draw the energy tank count (lo byte)
   pha
-  %DrawSingleNumber(#122)
+  %DrawSingleNumber(#124,PinkNumbers)
 
   ; Draw the item count (hi byte)
   pla
   xba
-  %DrawSingleNumber(#126)
+  %DrawSingleNumber(#118,WhiteNumbers)
 
-  ; *** HIJACKED CODE (DO NOT MODIFY) ***
+  ;
+  plp
   ply
   plx
   pla
-  pld
-  plb
-  rti
+  rts
 }
 
 pushtable
-table "font_white.tbl",rtl
+table "font_numbers_white_on_blue.tbl",rtl
 WhiteNumbers: {
+  dw "0123456789ABCDEF"
+}
+
+table "font_numbers_white_on_pink.tbl",rtl
+PinkNumbers: {
   dw "0123456789ABCDEF"
 }
 pulltable
@@ -119,7 +136,7 @@ table "font_yellow.tbl",rtl
 AreaNames: {
   dw "CRATER" ; 0 (includes Blue Brinstar)
   dw "G BRIN" ; 1 (Brinstar)
-  dw "U NORF" ; 2 (Norfair)
+  dw "UP NOR" ; 2 (Norfair)
   dw "W SHIP" ; 3
   dw "E MAR " ; 4 (Maridia)
   dw "TOUR  " ; 5
@@ -128,17 +145,18 @@ AreaNames: {
   dw "R BRIN" ; 8
   dw "KRAID " ; 9
   dw "W MAR " ; a
-  dw "U NORF" ; b
+  dw "LO NOR" ; b
   dw "CROC  " ; c
 }
 pulltable
 
+; Set tiles once in boss room
+org $90a7ee
+lda #$000f
+
+;
 org $90a8ef
 rtl
-
-; Hijack HUD loading routine
-org $809b3d
-jsl $809b44 ; *** HIJACKED CODE (DO NOT MODIFY) ***
 
 ; Runs after minimap grid has been drawn
 org $90a80a

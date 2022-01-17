@@ -23,3 +23,24 @@ GameplayStart: {
 + lda #$0000    ; Zero out A
   rtl
 }
+
+macro SetCounts(EnergyTanks,MajorItems)
+  db <EnergyTanks>
+  db <MajorItems>
+endmacro
+
+; Use Vanilla Counts for testing
+org $dfff10
+%SetCounts(2+1,1+1) ; Crateria + Blue Brinstar
+%SetCounts(1+2,0+1) ; Green Brinstar + Pink Brinstar
+%SetCounts(1,4)     ; Upper Norfair
+%SetCounts(1,1)     ; Wrecked Ship
+%SetCounts(1,3)     ; East Maridia
+%SetCounts(0,0)     ; Tourian
+%SetCounts(0,0)     ; Ceres
+%SetCounts(0,0)     ; Debug
+%SetCounts(0,2)     ; RedBrinstar
+%SetCounts(1,1)     ; Kraid
+%SetCounts(1,0)     ; West Maridia
+%SetCounts(2,1)     ; Lower Norfair
+%SetCounts(1,1)     ; Crocomire

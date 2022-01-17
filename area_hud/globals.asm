@@ -2,7 +2,7 @@
 !EOL = $dead
 
 ; Address where the sub area value is stored
-!SRAM_SubArea = $701600
+!SRAM_SubArea = $7edcb8
 
 ; Index values associated with each zone
 !Area_Crateria = #$00       ; includes Blue Brinstar

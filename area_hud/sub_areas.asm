@@ -129,8 +129,8 @@ SubAreaRooms: {
   }
 
   .UpperNorfairRooms: {
-  ;   dw !Area_UpperNorfair
-  ;   dw $A6A1  ; Kraid's lair entrance
+    dw !Area_UpperNorfair
+    dw $A6A1  ; Kraid's lair entrance
   ;   dw $A75D  ; Post ice beam mockball hall
   ;   dw $A788  ; Norfair lava hidden missile room
   ;   dw $A7B3  ; First hot room
@@ -170,7 +170,7 @@ SubAreaRooms: {
   ;   dw $B139  ; Norfair stone zoomer shaft
   ;   dw $B167  ; Rock Norfair save station
   ;   dw $B192  ; Pre Crocomire save station
-  ;   dw $dead
+    dw $dead
   }
 
   .EastMaridiaRooms: {
